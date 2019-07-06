@@ -65,9 +65,32 @@ class XhuihuangBuilding implements Building
         ];
 
         // 发送请求 POST
-        $res = $this->client->request('POST',$this->url,$postData);
-        dump($res);
-        echo $res->getStatusCode();
+        $data = http_build_query($postData);
+        $info = $this->_httpPost($this->url, $data);
+        $info = json_decode($info, true);  
+        
+        return $info;
+    }
+
+    //post 请求
+    public function _httpPost($url = '',$requestData = array())
+    {
+        $ch = curl_init();
+        curl_setopt($ch, CURLOPT_URL, $url);
+        curl_setopt($ch, CURLOPT_HEADER, 0);
+        curl_setopt($ch, CURLOPT_POST, true);
+        curl_setopt($ch, CURLOPT_POSTFIELDS, $requestData);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($ch, CURLOPT_TIMEOUT, 60); // 设置超时限制防止死循环
+        curl_setopt($ch, CURLOPT_FOLLOWLOCATION, 1);
+        curl_setopt($ch, CURLOPT_USERAGENT, "Mozilla/5.0 (Windows NT 5.1; zh-CN) AppleWebKit/535.12 (KHTML, like Gecko) Chrome/22.0.1229.79 Safari/535.12");
+        $response = curl_exec($ch);
+        //dd($ch);
+        if (curl_errno($ch)) {
+            echo 'Curl error:' . curl_error($ch);
+        }
+        curl_close($ch);
+        return $response;
     }
 
 }
