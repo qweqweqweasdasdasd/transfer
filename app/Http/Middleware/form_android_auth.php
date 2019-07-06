@@ -19,14 +19,14 @@ class form_android_auth
     public function handle($request, Closure $next)
     {
         // 接口数据是否为空
-        $type       = $request->input('type','');      //支付类型
-        $no         = $request->input('no','');        //订单号
-        $money      = $request->input('money','');     //存款金额
-        $mark       = $request->input('mark','');      //会员账号
-        $dt         = $request->input('dt','');        //支付时间
+        $type       = !empty($request->input('type'))? $request->input('type'):'';      //支付类型
+        $no         = !empty($request->input('no'))? $request->input('no'):'';          //订单号
+        $money      = !empty($request->input('money'))? $request->input('money'):'';    //存款金额
+        $mark       = !empty($request->input('mark'))? $request->input('mark'):'';      //会员账号
+        $dt         = !empty($request->input('dt'))? $request->input('dt'):'';          //支付时间
         
         $key        = env('SIGN_KEY');                 //约定key
-        $sign       = $request->input('sign','');      //客户端的签名
+        $sign       = !empty($request->input('sign'))? $request->input('sign'):'';      //客户端的签名
 
         // 安全考虑::订单或者金额为空
         if( empty($no) || empty($money) ){

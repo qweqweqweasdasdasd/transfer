@@ -15,5 +15,9 @@ class ApiErrDesc
     const DO_DEPOSIT_PARAM_EMPTY = ['3000','第四方存款接口传入参数不全!'];
 
     const DO_VERIFY_USER_PARAM_EMPTY = ['3001','第四方核实会员是否存在接口传入参数不全!'];
+
+    const DO_VERIFY_SUCCESS = ['3001','第四方核实会员接口核实正确!'];
+   
+    const DO_DEPOSIT_SUCCESS = ['3002','第四方存款接口核实正确!'];
     
 }

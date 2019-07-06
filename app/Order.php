@@ -19,6 +19,9 @@ class Order extends Model
     const POINT_SUCCESS = 4;      // 上分成功
     const BUDAN_SUCCESS = 5;      // 补单成功
     const NOT_KNOW_ERR  = 6;      // 不明原因失败
+    const INTERFACE_ERR = 7;      // 请求查询会员账号或者存款接口服务器错误
+    const POINT_ERR     = 8;      // 上分失败
+    const USERNAME_SUCCESS = 9;   // 账号有效
 
     // 根据订单查询到一条数据
     public function OrderFirst($orderNo)

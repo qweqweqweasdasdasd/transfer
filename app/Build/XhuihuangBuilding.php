@@ -46,7 +46,7 @@ class XhuihuangBuilding implements Building
         // 发送请求 POST
         $postData = http_build_query($postData);
         $response = json_decode($this->httpPost($url,$postData),true);
-
+        
         return $response;
     }
 
