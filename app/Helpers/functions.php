@@ -43,7 +43,7 @@ function CommonDepositStatus($code)
         case '8';
             return '<span class="label label-danger  radius">上分失败</span>';
         case '9';
-            return '<span class="label label-danger  radius">账号有效</span>';
+            return '<span class="label label-success  radius">账号有效</span>';
     }
 }
 

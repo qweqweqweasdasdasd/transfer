@@ -24,7 +24,7 @@ class XhuihuangBuilding implements Building
     public function doDeposit(array $d)
     {
         // 参数不全 抛出异常
-        if( !(!empty($d['username']) && !empty($d['money']) && !empty($d['no'])) ){
+        if( empty($d['username']) || empty($d['money']) || empty($d['no']) ){
             throw new ApiException(ApiErrDesc::DO_DEPOSIT_PARAM_EMPTY);
         }
         $url = $this->url . '/fourth_payment_platform/pay/addMoney';
@@ -46,7 +46,7 @@ class XhuihuangBuilding implements Building
         // 发送请求 POST
         $postData = http_build_query($postData);
         $response = json_decode($this->httpPost($url,$postData),true);
-        
+
         return $response;
     }
 

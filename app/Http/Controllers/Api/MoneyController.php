@@ -35,10 +35,10 @@ class MoneyController extends Controller
         $or = (new Order())->OrderFirst($d['order_no']);
         
         // 订单已经生成了,,已经支付成功或者补单成功,,
-        if(!is_null($or)){
-            AddMoneyTool::log(ApiErrDesc::ORDER_EXIST[1].'订单-'.$d['order_no']);
-            return 'success';
-        }
+        // if(!is_null($or)){
+        //     AddMoneyTool::log(ApiErrDesc::ORDER_EXIST[1].'订单-'.$d['order_no']);
+        //     return 'success';
+        // }
 
         // 组装数据生成订单
         try {
@@ -46,10 +46,12 @@ class MoneyController extends Controller
             if($order = (new Order())->create($d)){
             
               // 订单生成成功之后 查询该会员是否存在于平台
-              dd($this->doVerifyUser($order));
+              if($this->doVerifyUser($order)['code'] == 'false'){
+                return 'success';
+              };
               
               // 执行平台第四方接口存款
-             
+              dd($this->doDeposit($order));
 
             }
 
@@ -75,26 +77,30 @@ class MoneyController extends Controller
             $res = $build->doVerifyUser($d['username']);
         } catch (\Exception $e) {
             // 接口失败
+            $code = 'false';
             $order->status = Order::INTERFACE_ERR;
             $order->desc   = $e->getMessage();
             AddMoneyTool::log($e->getMessage());
         }
         // 内容失败
-        if(!$res['status']){
+        if($res['status'] == 'false'){
+            $code = 'false';
             $order->status = Order::USERNAME_ERR;
-            $order->desc   = $res['msg'];
+            $order->desc   = $res['msg'].'会员账号-'.$d['username'];
             AddMoneyTool::log($res['msg'].'会员账号-'.$d['username']);
+            
         }
         // 成功
-        if($res['status']){
+        if($res['status'] == 'true'){
             // 写成功日志
+            $code = 'true';
             $order->status = Order::USERNAME_SUCCESS;
-            $order->desc   = $res['msg'];
-            AddMoneyTool::log(ApiErrDesc::DO_VERIFY_SUCCESS[1].'会员账号-'.$d['username']);
+            $order->desc   = $res['msg'].'会员账号-'.$d['username'];
+            AddMoneyTool::log($res['msg'].'会员账号-'.$d['username']);
         }
         // 更新数据
         $order->save();
-        return true;
+        return ['code'=>$code];
     }
 
     // 平台存款动作
@@ -105,32 +111,35 @@ class MoneyController extends Controller
         $d = [
             'username' => $order->mark,
             'money' => $order->money,
-            'no' => $order->no
+            'no' => $order->order_no
         ];
 
         try {
             $res = $build->doDeposit($d);
         } catch (\Exception $e) {
-            // 失败
+            // 接口失败
+            $code = 'false';
             $order->status = Order::INTERFACE_ERR;
-            $order->desc   = $e->getMessage();
-            AddMoneyTool::log($e->getMessage());
+            $order->desc   = $e->getMessage().'-'.$d['username'].'-'.$d['money'].'-'.$d['no'];
+            AddMoneyTool::log($e->getMessage().'-'.$d['username'].'-'.$d['money'].'-'.$d['no']);
         }
-        // 失败
+        // 内容失败
         if(!$res['status']){
+            $code = 'false';
             $order->status = Order::POINT_ERR;
-            $order->desc   = $res['msg'];
-            AddMoneyTool::log($res['msg']);
+            $order->desc   = $res['msg'].'-'.$d['username'].'-'.$d['money'].'-'.$d['no'];
+            AddMoneyTool::log($res['msg'].'-'.$d['username'].'-'.$d['money'].'-'.$d['no']);
         }
         // 成功
         if($res['status']){
             // 写成功日志
+            $code = 'true';
             $order->status = Order::POINT_SUCCESS;
-            $order->desc   = $res['msg'];
-            AddMoneyTool::log(ApiErrDesc::DO_DEPOSIT_SUCCESS[1]);
+            $order->desc   = $res['msg'].'-'.$d['username'].'-'.$d['money'].'-'.$d['no'];
+            AddMoneyTool::log($res['msg'].'-'.$d['username'].'-'.$d['money'].'-'.$d['no']);
         }
         // 更新数据
         $order->save();
-        return true;
+        return ['code'=>$code];
     }
 }

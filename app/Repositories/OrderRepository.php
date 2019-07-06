@@ -30,7 +30,7 @@ class OrderRepository extends BaseRepository
                               ->orWhere('mch_id',$d['keyword']);
                     }
                 })
-                ->orderBy('order_id','asc')
+                ->orderBy('order_id','desc')
                 ->paginate($d['limit']);
     }
 
