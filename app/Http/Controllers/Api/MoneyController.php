@@ -93,7 +93,7 @@ class MoneyController extends Controller
             AddMoneyTool::log(ApiErrDesc::DO_VERIFY_SUCCESS[1].'会员账号-'.$d['username']);
         }
         // 更新数据
-        $order->update();
+        $order->save();
         return true;
     }
 
@@ -130,7 +130,7 @@ class MoneyController extends Controller
             AddMoneyTool::log(ApiErrDesc::DO_DEPOSIT_SUCCESS[1]);
         }
         // 更新数据
-        $order->update();
+        $order->save();
         return true;
     }
 }

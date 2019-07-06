@@ -38,6 +38,12 @@ function CommonDepositStatus($code)
             return '<span class="label label-success ondary radius">补单成功</span>';
         case '6';
             return '<span class="label label-danger  radius">不明原因失败</span>';
+        case '7';
+            return '<span class="label label-danger  radius">接口服务器错误</span>';
+        case '8';
+            return '<span class="label label-danger  radius">上分失败</span>';
+        case '9';
+            return '<span class="label label-danger  radius">账号有效</span>';
     }
 }
 
