@@ -10,7 +10,7 @@ class XhuihuangBuilding implements Building
     protected $client = '';
     protected $app_id = '1543652117475';
     protected $key    = 'ebce3623f74746c3968d0ad072a108b5';
-    protected $url    = 'http://ourf4pay.agcjxnow.com/fourth_payment_platform/pay/addMoney';
+    protected $url    = 'http://ourf4pay.agcjxnow.com';
 
     public function __construct()
     {
@@ -27,7 +27,7 @@ class XhuihuangBuilding implements Building
         if( !(!empty($d['username']) && !empty($d['money']) && !empty($d['no'])) ){
             throw new ApiException(ApiErrDesc::DO_DEPOSIT_PARAM_EMPTY);
         }
-
+        $url = $this->url . '/fourth_payment_platform/pay/addMoney';
         $sign = md5('account='.$d['username'].'&app_id='.$this->app_id.'&money='.$d['money'].'&order_no='.$d['no'].'&status=0&tradeType=1&type=1&key='.$this->key);
 
         // 发送数据
@@ -44,18 +44,21 @@ class XhuihuangBuilding implements Building
         ];
 
         // 发送请求 POST
-        $res = $this->client->request('POST',$this->url,$postData);
-        dump($res);
-        echo $res->getStatusCode();
+        $postData = http_build_query($postData);
+        $response = json_decode($this->httpPost($url,$postData),true);
+
+        return $response;
     }
 
     // 第四方接口会员查询
     public function doVerifyUser(string $username)
     {
+      	
         if(empty($username)){
             throw new ApiException(ApiErrDesc::DO_VERIFY_USER_PARAM_EMPTY);
         }
         
+        $url = $this->url . '/fourth_payment_platform/pay/checkAccount';
         $sign = md5('account='.$username.'&app_id='.$this->app_id.'&key='.$this->key);
 
         $postData = [
@@ -63,17 +66,16 @@ class XhuihuangBuilding implements Building
             'app_id' =>$this->app_id,
             'sign' => $sign
         ];
-
+		
         // 发送请求 POST
-        $data = http_build_query($postData);
-        $info = $this->_httpPost($this->url, $data);
-        $info = json_decode($info, true);  
+        $postData = http_build_query($postData);
+        $response = json_decode($this->httpPost($url, $postData),true); 
         
-        return $info;
+        return $response;
     }
 
     //post 请求
-    public function _httpPost($url = '',$requestData = array())
+    public function httpPost($url = '',$requestData = array())
     {
         $ch = curl_init();
         curl_setopt($ch, CURLOPT_URL, $url);

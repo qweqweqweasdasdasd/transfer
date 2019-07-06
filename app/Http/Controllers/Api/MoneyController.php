@@ -64,12 +64,13 @@ class MoneyController extends Controller
             //'no' => '111111111111111111'
         ];
         try {
-            $build->doVerifyUser($username = 'test123');
+            $res = $build->doVerifyUser($d['username']);
         } catch (\Exception $e) {
             // 失败
             AddMoneyTool::log($e->getMessage());
         }
         // 成功
+        dd($res);
     }
 
     // 平台存款动作
