@@ -4,5 +4,7 @@ Route::any('/pay/addMoney','Api\MoneyController@addMoney')->middleware('form_and
 
 Route::any('/pay/budan','Api\MoneyController@budan');      // 自动补单接口 ??
 
-Route::any('/pay/test','Api\MoneyController@test');        // 测试接口
+Route::any('/pay/doVerifyUser','Api\MoneyController@doVerifyUser');        // 测试平台会员存在接口
+
+Route::any('/pay/doDeposit','Api\MoneyController@doDeposit');        // 测试平台存款接口
 
