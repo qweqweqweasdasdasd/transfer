@@ -3,6 +3,8 @@
 namespace App\Exceptions;
 
 use Exception;
+use App\Common\ApiErrDesc;
+use app\Libs\ResponseJson;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
 use Illuminate\Validation\ValidationException;
 
@@ -49,7 +51,7 @@ class Handler extends ExceptionHandler
      */
     public function render($request, Exception $exception)
     {
-        //如果路由中含有 "admin" 
+        // 如果路由中含有 "admin" 
         if($request->is('admin/*')){
             if($exception instanceof ValidationException){
                 $result = [
@@ -60,7 +62,20 @@ class Handler extends ExceptionHandler
             }
         }
 
-        
+        // 如果路由中含有 "api"
+        if($request->is('api/*')){
+            if($exception instanceof ApiException){
+                $code = $exception->getCode();
+                $msg  = $exception->getMessage();
+            }else{
+                $code = $exception->getCode();
+                if(!$code || $code < 0){
+                    $code = ApiErrDesc::NOT_KNOW_ERR[0];
+                }
+                $msg = $exception->getMessage() ?: ApiErrDesc::NOT_KNOW_ERR[1];
+            }
+            echo ResponseJson::JsonData($code,$msg);
+        }
         return parent::render($request, $exception);
     }
 }

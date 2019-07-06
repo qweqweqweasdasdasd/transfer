@@ -19,35 +19,40 @@ class RBAC
     {
         //获取到当前用户的信息
         $manager = Auth::guard('admin')->user();
-
-        //编辑管理员下面所有角色,角色下面所有的权限,组装为数组
-        $data = $d = [];
-        foreach($manager->roles as $k=>$r){
-            $d[$k] = $r->permission->toArray(); 
-            foreach(array_collapse($d) as $k=>$v){
-                //空的不验证
-                if(!empty($v['rule'])){
-                    $data[$k] = $v['rule'];
+        
+        //管理员id为1为超级管理员
+        if($manager->mg_id != 1){
+            //编辑管理员下面所有角色,角色下面所有的权限,组装为数组
+           
+            $data = $d = [];
+            foreach($manager->roles as $k=>$r){
+                $d[$k] = $r->permission->toArray(); 
+                foreach(array_collapse($d) as $k=>$v){
+                    //空的不验证
+                    if(!empty($v['rule'])){
+                        $data[$k] = $v['rule'];
+                    }
                 }
             }
-        }
-
-        //获取到不需要验证的权限添加到数组内
-        $allowPermission = Permission::where('check',2)->get();
-        if(count($allowPermission)){
-            foreach ($allowPermission as $k => $v) {
-                //$allow[$k] = $v['rule']; 
-                array_push($data,$v['rule']);
+            //dump($data);
+            //获取到不需要验证的权限添加到数组内
+            $allowPermission = Permission::where('check',2)->get();
+            if(count($allowPermission)){
+                foreach ($allowPermission as $k => $v) {
+                    //$allow[$k] = $v['rule']; 
+                    array_push($data,$v['rule']);
+                }
             }
-        }
-        $nowCa = strtolower(getCurrentControllerName().'-'.getCurrentMethodName());
-        //删除重复的数值切换为字符串
-        $ps_ca = implode(',',array_unique($data));
-        //dump($ps_ca,$nowCa);     
-        
-        if(strpos($ps_ca,$nowCa) === false){
-            exit('没有权限!');
-        }
+            $nowCa = strtolower(getCurrentControllerName().'-'.getCurrentMethodName());
+            //删除重复的数值切换为字符串
+            $ps_ca = implode(',',array_unique($data));
+            //dump($ps_ca,$nowCa);     
+            
+            if(strpos($ps_ca,$nowCa) === false){
+                exit('没有权限!');
+            }         
+        };
+
         return $next($request);
     }
 }

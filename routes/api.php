@@ -1,19 +1,8 @@
 <?php
 
-/*
-|--------------------------------------------------------------------------
-| API Routes
-|--------------------------------------------------------------------------
-|
-| Here is where you can register API routes for your application. These
-| routes are loaded by the RouteServiceProvider within a group which
-| is assigned the "api" middleware group. Enjoy building your API!
-|
-*/
-// Route::middleware('auth:api')->get('/user', function (Request $request) {
-//     return $request->user();
-// });
+Route::any('/pay/addMoney','Api\MoneyController@addMoney')->middleware('form_android_auth');     // 自动存款接口
 
-//自动出款接口
-Route::any('/to/transfer','Api\OutflowController@toTransfer')->middleware('interfaceAuth');
+Route::any('/pay/budan','Api\MoneyController@budan');      // 自动补单接口 ??
+
+Route::any('/pay/test','Api\MoneyController@test');        // 测试接口
 

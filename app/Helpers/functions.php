@@ -22,6 +22,25 @@ function CommonStatusShow($code)
     }
 }
 
+//存款订单状态显示
+function CommonDepositStatus($code)
+{
+    switch($code){
+        case '1':
+            return '<span class="label label-default radius">支付成功</span>';
+        case '2':
+            return '<span class="label label-warning radius">账号无效</span>'; 
+        case '3':
+            return '<span class="label label-danger radius">请求上分接口中</span>';
+        case '4';
+            return '<span class="label label-success radius">上分成功</span>';
+        case '5';
+            return '<span class="label label-success ondary radius">补单成功</span>';
+        case '6';
+            return '<span class="label label-danger  radius">不明原因失败</span>';
+    }
+}
+
 //出款订单状态显示
 function OutflowStatusShow($code)
 {

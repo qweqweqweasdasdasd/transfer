@@ -58,6 +58,6 @@ class Kernel extends HttpKernel
         'guest' => \App\Http\Middleware\RedirectIfAuthenticated::class,
         'throttle' => \Illuminate\Routing\Middleware\ThrottleRequests::class,
         'RBAC' => \App\Http\Middleware\RBAC::class,
-        'interfaceAuth' => \App\Http\Middleware\InterfaceAuth::class,
+        'form_android_auth' => \App\Http\Middleware\form_android_auth::class,
     ];
 }

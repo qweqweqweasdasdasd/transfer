@@ -15,7 +15,7 @@ class CreateManagersTable extends Migration
     {
         Schema::create('managers', function (Blueprint $table) {
             $table->increments('mg_id')->comment('管理员id');
-            $table->string('mg_name',10)->unique()->default('')->comment('管理员名称');
+            $table->string('mg_name',20)->unique()->default('')->comment('管理员名称');
             $table->string('password',100)->default('')->comment('管理员密码');
             $table->string('ip')->default('')->nullable()->comment('登录ip');
             $table->integer('login_counts')->default('0')->nullable()->comment('登录次数');
